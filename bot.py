@@ -119,6 +119,7 @@ async def shut_up_when_unmuted(member, prev, cur):
         print(member.name + " started talking!" + " (" + str(datetime.datetime.now()) + ")")
         await channel.send("@" + member.name + " 熄返個咪啦 屌你老母 冇人想聽你講野")
 
+# Method to save user name and id
 def save_user_id(message):
     author = message.author
     author_id = author.id
