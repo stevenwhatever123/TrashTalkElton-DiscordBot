@@ -1,5 +1,6 @@
 import discord
 import time
+import asyncio
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from discord.voice_client import VoiceClient
@@ -22,12 +23,30 @@ with open('data/goldenWords.txt') as file_in:
 # e.g. .command
 client = commands.Bot(command_prefix = '.')
 
+# Remove default help command
+client.remove_command('help')
+
 # A ready message when the bot is running
 @client.event
 async def on_ready():
+
+    await client.change_presence(activity=discord.Game(name="Shisha | .help"))
+
     print("==============")
     print("Bot is ready")
     print("==============")
+
+@client.command()
+async def help(ctx):
+    await ctx.send("我唔係好撚想幫你")
+    await ctx.send("以下係可以用既command:")
+    # Print out all commands that can be used
+    helptext = "```\n"
+    for command in client.commands:
+        helptext+=f"{command}\n"
+    helptext+="```"
+    await ctx.send(helptext)
+    await ctx.send("打 '.add_golden_words' 可以打金句入字典錄")
 
 # Trash Talk text
 @client.command()
@@ -44,6 +63,7 @@ async def youSoFunny(ctx):
 async def samwong33(ctx):
     time.sleep(5)
     await ctx.send("係呀")
+
 
 # Command not found handler
 # And bullshitting for a little bit
@@ -78,7 +98,10 @@ async def on_message(message):
             if(str(command) in message.content):
                 isCommand = True
                 print(message.author.name + " inputs a command without a '.'" + " (" + str(datetime.datetime.now()) + ")")
-                await channel.send("@" + message.author.name + " 你個戇鳩試下係前面加個 '.'")
+                output_text = await channel.send("@" + message.author.name + " 你個戇鳩試下係前面加個 '.'")
+                await asyncio.sleep(3) 
+                await output_text.delete()
+                await asyncio.sleep(4) 
         if(not isCommand):
             save_user_id(message)
             ## Random word selection
@@ -86,7 +109,10 @@ async def on_message(message):
             string = golden_words[randnum]
             #await channel.send("Fuck you" + " (User ID:" + str(message.author.id) + ")")
             print("Just trash talked " + message.author.name + " (" + str(datetime.datetime.now()) + ")")
-            await channel.send(string + " @" + message.author.name)     
+            output_text = await channel.send(string + " @" + message.author.name)    
+            await asyncio.sleep(3) 
+            await output_text.delete()
+            await asyncio.sleep(4) 
     await client.process_commands(message)
 
 # Check voice state for every memeber
@@ -95,29 +121,37 @@ async def on_voice_state_update(member, prev, cur):
     await notice_someone_joined_in(member, prev, cur)
     await shut_up_when_unmuted(member, prev, cur)
 
-# Notice all user that someone joins or leaves the voice chat
+# Notice all user that someone joins/leaves the voice chat or mute/unmute themselves
 async def notice_someone_joined_in(member, prev, cur):
     if prev.channel is None and cur.channel is not None:
         # Trash talk only for Elton
         if(member.name == "Lun Yeung"):
-
-            await member.guild.system_channel.send("撚樣已經入左黎")
+            output_text = await member.guild.system_channel.send("撚樣已經入左黎")
+            await asyncio.sleep(3) 
+            await output_text.delete()
+            await asyncio.sleep(4) 
         else:
+            # Trash talk when other memebers joins the voice channel
             print(member.name + " joins the chat" + " (" + str(datetime.datetime.now()) + ")")
-            await member.guild.system_channel.send("@" + member.name + " 個傻仔入左黎")
+            output_text = await member.guild.system_channel.send("@" + member.name + " 個傻仔入左黎開始想講野")
+            await asyncio.sleep(3) 
+            await output_text.delete()
+            await asyncio.sleep(4) 
     else:
-        print(member.name + " leaves the chat" + " (" + str(datetime.datetime.now()) + ")")
-        await member.guild.system_channel.send("@" + member.name + " 個傻仔已經走左")
-        
-# Piss someone off when they try to mute or unmute themselves
-async def shut_up_when_unmuted(member, prev, cur):
-    channel = client.get_channel(384719124204355587)
-    if cur.self_mute and not prev.self_mute:
-        print(member.name + " stopped talking!" + " (" + str(datetime.datetime.now()) + ")")
-        await channel.send("@" + member.name + " 個戇鳩已經熄撚左支咪")
-    elif prev.self_mute and not cur.self_mute:
-        print(member.name + " started talking!" + " (" + str(datetime.datetime.now()) + ")")
-        await channel.send("@" + member.name + " 熄返個咪啦 屌你老母 冇人想聽你講野")
+        # Trash talk when someone unmute their mic
+        if(prev.self_mute and not cur.self_mute):
+            print(member.name + " started talking!" + " (" + str(datetime.datetime.now()) + ")")
+            output_text = await member.guild.system_channel.send("@" + member.name + " 熄返個咪啦 屌你老母 冇人想聽你講野")
+            await asyncio.sleep(3) 
+            await output_text.delete()
+            await asyncio.sleep(4) 
+        else:     
+            # Trash Talk when someone leaves or mute their mic      
+            print(member.name + " leaves the chat" + " (" + str(datetime.datetime.now()) + ")")
+            output_text = await member.guild.system_channel.send("@" + member.name + " 個傻仔已經收左皮")
+            await asyncio.sleep(3) 
+            await output_text.delete()
+            await asyncio.sleep(4) 
 
 # Method to save user name and id
 def save_user_id(message):
@@ -154,5 +188,37 @@ def save_user_id(message):
         with open("outputdata/" + author_name + ".txt", "a") as text_file:
             text_file.write(text_temp)
 
+
+# Clear all bot messages that are sent before
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx):
+    channel = client.get_channel(ctx.message.channel.id)
+    messages = await channel.history(limit=200).flatten()
+    await ctx.send("Deleting messages")
+    for message in messages:
+        if(message.author.id == 743114047473451151):
+            await message.delete()
+    await ctx.send("Done")
+
+
+# command for recieveing suggestions to golden words text file from other users
+@client.command()
+async def add_golden_words(ctx, message):
+
+    text = message + "\n"
+
+    try:
+        file = open("feedback/goldenwords.txt")
+    except:
+        open("feedback/goldenwords.txt", "a")
+
+    with open("feedback/goldenwords.txt", "a") as text_file:
+        print("Golden words added by " + ctx.message.author.name + " (" + str(datetime.datetime.now()) + ")")
+        result_text = "```\n"
+        result_text += text
+        result_text += "```"
+        await ctx.send(result_text + " 已經入左金句錄")
+        text_file.write(text)
 
 client.run("TOKEN")
