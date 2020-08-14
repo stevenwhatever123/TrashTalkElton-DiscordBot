@@ -1,2 +1,2 @@
 # TrashTalkElton-DiscordBot
- Discord Bot which pretends to my one of my friends, Elton, who like trash talking
+ Discord Bot which acts like one of my friends, Elton, who like trash talking and bullshitting
