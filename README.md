@@ -1,5 +1,7 @@
 # TrashTalkElton-DiscordBot
  Discord Bot which acts like one of my friends, Elton, who like trash talking and bullshitting
+ 
+ There are quite a lot of funny functions in this bot but I'm going to tell you a bit of it.
 
 How does it work?  
 It's simple, whenever you text something, it trashs talk you back.
