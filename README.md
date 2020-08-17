@@ -4,4 +4,7 @@
 How does it work?  
 It's simple, whenever you text something, it trashs talk you back.
 ![image](https://github.com/stevenwhatever123/TrashTalkElton-DiscordBot/blob/master/Image/image_hi.png)
-
+  
+    
+There are also some few funy commands, for example:
+![image](https://github.com/stevenwhatever123/TrashTalkElton-DiscordBot/blob/master/Image/image_command1.png)
