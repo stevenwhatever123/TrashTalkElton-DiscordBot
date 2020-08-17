@@ -276,4 +276,4 @@ async def del_golden_words(ctx, message):
     # Update Golden Words list   
     golden_words = read_data_file(file)
 
-client.run("NzQzMTE0MDQ3NDczNDUxMTUx.XzP84w.VcmJZ4-3lf1hkOkqoKTIKlczqcs")
+client.run("TOKEN")
