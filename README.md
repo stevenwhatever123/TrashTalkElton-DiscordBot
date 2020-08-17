@@ -3,3 +3,5 @@
 
 How does it work?  
 It's simple, whenever you text something, it trashs talk you back.
+![image](https://github.com/stevenwhatever123/TrashTalkElton-DiscordBot/blob/master/Image/image_hi.png)
+
